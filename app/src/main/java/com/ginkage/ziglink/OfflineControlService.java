@@ -8,6 +8,8 @@ import android.service.controls.ControlsProviderService;
 import android.service.controls.DeviceTypes;
 import android.service.controls.actions.BooleanAction;
 import android.service.controls.actions.ControlAction;
+import android.service.controls.templates.ControlButton;
+import android.service.controls.templates.ToggleTemplate;
 import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,10 @@ public class OfflineControlService extends ControlsProviderService {
                     .setDeviceType(DeviceTypes.TYPE_LIGHT) // For example, DeviceTypes.TYPE_THERMOSTAT
                     // Required: Current status of the device
                     .setStatus(Control.STATUS_OK) // For example, Control.STATUS_OK
+                    .setControlTemplate(
+                            new ToggleTemplate("button",
+                                    new ControlButton(false, "toggle")))
+                    .setStatusText("Off")
                     .build();
 
             updatePublisher.onNext(control);
@@ -117,6 +123,10 @@ public class OfflineControlService extends ControlsProviderService {
                     .setDeviceType(DeviceTypes.TYPE_LIGHT) // For example, DeviceTypes.TYPE_THERMOSTAT
                     // Required: Current status of the device
                     .setStatus(Control.STATUS_OK) // For example, Control.STATUS_OK
+                    .setControlTemplate(
+                            new ToggleTemplate("button",
+                                    new ControlButton(true, "toggle")))
+                    .setStatusText("On")
                     .build();
 
             // This is the publisher the application created during the call to createPublisherFor()
