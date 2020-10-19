@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ginkage.ziglink">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -28,6 +30,8 @@
                 <action android:name="android.service.controls.ControlsProviderService" />
             </intent-filter>
         </service>
+
+        <service android:name=".NotificationService" />
     </application>
 
 </manifest>

@@ -18,12 +18,16 @@ public class UsbSwitch {
     private final UsbSerialProber prober = new UsbSerialProber(customTable);
     private UsbSerialPort port;
 
-    public void connect(Context context) throws IOException {
+    public boolean connect(Context context) {
+        if (port != null) {
+            return true;
+        }
+
         // Find all available drivers from attached devices.
         UsbManager usbManager = context.getSystemService(UsbManager.class);
         List<UsbSerialDriver> availableDrivers = prober.findAllDrivers(usbManager);
         if (availableDrivers.isEmpty()) {
-            return;
+            return false;
         }
 
         // Open a connection to the first available driver.
@@ -31,15 +35,27 @@ public class UsbSwitch {
         UsbDeviceConnection connection = usbManager.openDevice(driver.getDevice());
         if (connection == null) {
             // add UsbManager.requestPermission(driver.getDevice(), ..) handling here
-            return;
+            return false;
         }
 
-        port = driver.getPorts().get(0); // Most devices have just one port (port 0)
-        port.open(connection);
-        port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+        try {
+            port = driver.getPorts().get(0); // Most devices have just one port (port 0)
+            port.open(connection);
+            port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+            return true;
+        } catch (IOException e) {
+            Log.e("UsbSwitch", "Failed to open port", e);
+        }
+
+        port = null;
+        return false;
     }
 
     public void turnOn() {
+        if (port == null) {
+            return;
+        }
+
         try {
             port.write(new byte[] { '1' }, 1000);
         } catch (IOException e) {
@@ -48,6 +64,10 @@ public class UsbSwitch {
     }
 
     public void turnOff() {
+        if (port == null) {
+            return;
+        }
+
         try {
             port.write(new byte[] { '0' }, 1000);
         } catch (IOException e) {
@@ -55,11 +75,17 @@ public class UsbSwitch {
         }
     }
 
-    public void ddisconnect() {
+    public void disconnect() {
+        if (port == null) {
+            return;
+        }
+
         try {
             port.close();
         } catch (IOException e) {
             Log.e("UsbSwitch", "Failed to disconnect", e);
         }
+
+        port = null;
     }
 }

@@ -4,40 +4,33 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final UsbSwitch usbSwitch = new UsbSwitch();
+    private NotificationServiceConnection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        startForegroundService(NotificationService.getIntent(this));
+        connection = new NotificationServiceConnection(this, service -> {});
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        try {
-            usbSwitch.connect(this);
-            TextView txtState = findViewById(R.id.txtState);
-            txtState.setText("Connected");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        connection.bind();
 
         Button btnOn = findViewById(R.id.btnOn);
         Button btnOff = findViewById(R.id.btnOff);
-        btnOn.setOnClickListener(v -> usbSwitch.turnOn());
-        btnOff.setOnClickListener(v -> usbSwitch.turnOff());
+        btnOn.setOnClickListener(v -> connection.turnOn());
+        btnOff.setOnClickListener(v -> connection.turnOff());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        usbSwitch.ddisconnect();
+        connection.unbind();
     }
 }

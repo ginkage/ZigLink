@@ -23,6 +23,19 @@ public class OfflineControlService extends ControlsProviderService {
 
     private static final String DEVICE_ID = "UsbSwitch";
     private ReplayProcessor<Control> updatePublisher;
+    private NotificationServiceConnection connection;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        connection = new NotificationServiceConnection(this, service -> {});
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        connection.unbind();
+    }
 
     @NonNull
     @Override
@@ -60,6 +73,7 @@ public class OfflineControlService extends ControlsProviderService {
         PendingIntent pi = PendingIntent.getActivity(context, 1, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
         updatePublisher = ReplayProcessor.create();
+        connection.bind();
 
         // For each controlId in controlIds
         if (controlIds.contains(DEVICE_ID)) {
@@ -100,8 +114,15 @@ public class OfflineControlService extends ControlsProviderService {
             consumer.accept(ControlAction.RESPONSE_OK);
 
             BooleanAction action = (BooleanAction) controlAction;
+            boolean state = action.getNewState();
             // In this example, action.getNewState() will have the requested action: true for “On”,
             // false for “Off”.
+
+            if (state) {
+                connection.turnOn();
+            } else {
+                connection.turnOff();
+            }
 
             Context context = getBaseContext();
             Intent i = new Intent();
@@ -125,8 +146,8 @@ public class OfflineControlService extends ControlsProviderService {
                     .setStatus(Control.STATUS_OK) // For example, Control.STATUS_OK
                     .setControlTemplate(
                             new ToggleTemplate("button",
-                                    new ControlButton(true, "toggle")))
-                    .setStatusText("On")
+                                    new ControlButton(state, "toggle")))
+                    .setStatusText(state ? "On" : "Off")
                     .build();
 
             // This is the publisher the application created during the call to createPublisherFor()
