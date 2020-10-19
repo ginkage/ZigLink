@@ -1,0 +1,31 @@
+<?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
+<actions>
+    <!--    Example Action -->
+    <!--    <action intentName="Intent name (actions.intent.*)"> -->
+    <!--        <action-display -->
+    <!--            icon="@mipmap/..." -->
+    <!--            labelTemplate="@array/..." /> -->
+    <!--        <fulfillment urlTemplate="Action content URI or URL"> -->
+    <!--            <parameter-mapping -->
+    <!--                intentParameter="Parameter name in Intent URI" -->
+    <!--                urlParameter="Parameter name in URL" /> -->
+    <!--        </fulfillment> -->
+    <!--    </action> -->
+
+    <action intentName="actions.intent.OPEN_APP_FEATURE">
+        <!-- Each parameter can reference an entity set using a custom ID. -->
+        <parameter name="feature">
+            <entity-set-reference entitySetId="FeatureEntitySet"/>
+        </parameter>
+
+        <fulfillment urlTemplate="intent:#Intent;package=com.ginkage.ziglink;action=com.ginkage.ziglink.TOGGLE_LIGHT{;S.state};end">
+            <parameter-mapping intentParameter="feature" urlParameter="S.state" />
+        </fulfillment>
+    </action>
+
+    <entity-set entitySetId="FeatureEntitySet">
+        <entity identifier="LIGHTS_ON" name="lights on" />
+        <entity identifier="LIGHTS_OFF" name="lights off" />
+    </entity-set>
+
+</actions>
