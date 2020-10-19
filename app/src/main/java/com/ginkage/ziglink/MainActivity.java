@@ -12,9 +12,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         startForegroundService(NotificationService.getIntent(this));
         connection = new NotificationServiceConnection(this, service -> {});
+
+        if ("android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(getIntent().getAction())) {
+            finish();
+        } else {
+            setContentView(R.layout.activity_main);
+        }
     }
 
     @Override
