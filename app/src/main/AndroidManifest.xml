@@ -17,8 +17,14 @@
 
         <activity android:name=".MainActivity">
             <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="ziglink.ginkage.com" android:pathPrefix="/lights" />
+            </intent-filter>
 
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
                 <action android:name="com.ginkage.ziglink.TOGGLE_LIGHT" />

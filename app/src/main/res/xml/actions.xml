@@ -18,14 +18,12 @@
             <entity-set-reference entitySetId="FeatureEntitySet"/>
         </parameter>
 
-        <fulfillment urlTemplate="intent:#Intent;package=com.ginkage.ziglink;action=com.ginkage.ziglink.TOGGLE_LIGHT{;S.state};end">
-            <parameter-mapping intentParameter="feature" urlParameter="S.state" />
-        </fulfillment>
+        <fulfillment urlTemplate="{@url}" />
     </action>
 
     <entity-set entitySetId="FeatureEntitySet">
-        <entity identifier="LIGHTS_ON" name="lights on" />
-        <entity identifier="LIGHTS_OFF" name="lights off" />
+        <entity url="http://ziglink.ginkage.com/lights?on" name="light" />
+        <entity url="http://ziglink.ginkage.com/lights?off" name="dark" />
     </entity-set>
 
 </actions>
