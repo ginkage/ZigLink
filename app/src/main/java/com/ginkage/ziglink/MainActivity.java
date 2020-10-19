@@ -1,8 +1,9 @@
 package com.ginkage.ziglink;
 
+import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         startForegroundService(NotificationService.getIntent(this));
         connection = new NotificationServiceConnection(this, service -> {});
 
-        if ("android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(getIntent().getAction())) {
+        if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(getIntent().getAction())) {
             finish();
         } else {
             setContentView(R.layout.activity_main);

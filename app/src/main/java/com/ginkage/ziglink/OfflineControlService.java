@@ -10,12 +10,16 @@ import android.service.controls.actions.BooleanAction;
 import android.service.controls.actions.ControlAction;
 import android.service.controls.templates.ControlButton;
 import android.service.controls.templates.ToggleTemplate;
+
 import androidx.annotation.NonNull;
+
+import org.reactivestreams.FlowAdapters;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Flow;
 import java.util.function.Consumer;
-import org.reactivestreams.FlowAdapters;
+
 import io.reactivex.Flowable;
 import io.reactivex.processors.ReplayProcessor;
 
